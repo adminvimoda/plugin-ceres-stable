@@ -1,0 +1,114 @@
+{% extends getPartial('page-design') %}
+
+{% block PageBody %}
+
+    {{ component( "Ceres::Customer.Components.AddressSelect.AddressSelect" ) }}
+    {{ component( "Ceres::MyAccount.Components.AccountSettings" ) }}
+    {{ component( "Ceres::MyAccount.Components.OrderHistory" ) }}
+    {{ component( "Ceres::MyAccount.Components.BankDataSelect" ) }}
+    {{ component( "Ceres::Checkout.Components.OrderDetails" ) }}
+
+    {% set userObject = services.customer.getContact() %}
+    {% set userBankData = services.contactBank.getBanksOfContact(frontend.Account.AccountContactId) %}
+
+    <div class="page-content myaccount container-max m-b-3 m-t-1">
+
+        <resource
+                name="checkout"
+                route="/rest/io/checkout/"
+                :data="{{ services.checkout.getCheckout() | json_encode() }}"></resource>
+        <!-- HEADER -->
+        <div class="row m-b-3">
+            <div class="col-sm-9">
+                <h1 class="h4">{{ trans("Ceres::Template.accMyAccount") }}</h1>
+                {% if frontend.Account.getIsAccountLoggedIn %}
+                    {% if userObject.firstName|length > 0 and userObject.lastName|length > 0 %}
+                        <span class="text-muted">{{ trans("Ceres::Template.generalHello", {"username": userObject.firstName ~ " " ~ userObject.lastName}) }}</span>
+                    {% else %}
+                        <span class="text-muted">{{ trans("Ceres::Template.generalHello", {"username": userObject.email}) }}</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-sm-3">
+                <a href="#" class="btn btn-danger pull-xs-right" v-logout>
+                    <i class="fa fa-sign-out"></i>
+                    {{ trans("Ceres::Template.accLogout") }}
+                </a>
+            </div>
+            <div class="col-xs-12">
+                <hr class="">
+            </div>
+        </div>
+        <!-- ./HEADER -->
+
+        <!-- ADDRESS AREA -->
+        <div class="row">
+            <div class="col-md-6">
+                <h4>
+                    {{ trans("Ceres::Template.accInvoiceAddresses") }}
+                </h4>
+                <p class="text-muted small font-italic">{{ trans("Ceres::Template.generalAll") }} {{ trans("Ceres::Template.accInvoiceAddresses") }}</p>
+                <div class="shipping-addresses-select">
+                    <invoice-address-select :address-list="{{ services.customer.getAddresses(1) | json_encode() }}"
+                                            :selected-address-id="{{ services.checkout.getBillingAddressId() }}"></invoice-address-select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>
+                    {{ trans("Ceres::Template.accShippingAddresses") }}
+                </h4>
+                <p class="text-muted small font-italic">{{ trans("Ceres::Template.generalAll") }} {{ trans("Ceres::Template.accShippingAddresses") }}</p>
+                <div class="shipping-addresses-select">
+                    <shipping-address-select :address-list="{{ services.customer.getAddresses(2) | json_encode() }}"
+                                             :selected-address-id="{{ services.checkout.getDeliveryAddressId() }}"></shipping-address-select>
+                </div>
+            </div>
+        </div>
+        <!-- ./ADDRESS AREA -->
+
+        <!-- ACCOUNT SETTINGS AREA -->
+        <div class="row">
+            <div class="col-md-6">
+                <h4>
+                    {{ trans("Ceres::Template.accAccountSettings") }}
+                </h4>
+                <p class="text-muted small font-italic">{{ trans("Ceres::Template.accChangeLoginData") }}</p>
+
+                <div class="card m-b-3">
+                    <account-settings template="#vue-account-settings" :user-data="{{ userObject }}">
+                        <account-settings>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h4>
+                    {{ trans("Ceres::Template.accBankDetails") }}
+                </h4>
+
+
+                <p class="text-muted small font-italic">{{ trans("Ceres::Template.accChangePaymentInformation") }}</p>
+                <bank-data-select template="#vue-bank-data-select" :user-bank-data="{{ userBankData }}"
+                                  contact-id="{{ frontend.Account.AccountContactId }}"></bank-data-select>
+
+            </div>
+        </div>
+        <!-- ./ACCOUNT SETTINGS AREA -->
+
+    </div>
+
+    <!-- ORDER HISTORY -->
+    {% set ordersPerPage = config("Ceres.my_account.orders_per_page") %}
+    {% if not (ordersPerPage matches '/^\\d+$/') %}
+        {# config value is not a valid number #}
+        {% set ordersPerPage = 5 %}
+    {% endif %}
+    <order-history
+            template="#vue-order-history"
+            :order-list="{{ services.customer.getOrders(1, ordersPerPage) | json_encode() }}"
+            :items-per-page="{{ ordersPerPage }}"
+            :show-first-page="{{ config('Ceres.pagination.showFirstPage') }}"
+            :show-last-page="{{ config('Ceres.pagination.showLastPage') }}">
+    </order-history>
+    <!-- ./ORDER HISTORY -->
+
+{% endblock %}

@@ -1,0 +1,129 @@
+.to-top {
+    display: block;
+    background-color: $gray-dark;
+    text-align: center;
+    padding: .5rem .5rem;
+    text-decoration:none!important;
+    &:hover {
+    	background-color: $gray-darker;
+    }
+    i {
+    	color: white;
+	    font-size: 1.5em;
+	    padding: .5em 0;
+    }
+}
+
+.footer{
+	display: block;
+	background-color: $footer-bg;
+	
+	a{
+		color: $footer-color;
+	}
+
+	.svg.plenty-brand {
+ 		padding:0 .5em;
+ 		path {
+ 			fill: $gray-dark;
+ 		}
+ 	}
+
+	.footer-features{
+		border-top: 1px solid transparent;
+		background-color: $footer-features-bg;
+		color: $footer-features-color;
+		i {
+			color:$footer-features-color !important;
+		}
+	}
+
+	.footer-content{
+
+	}
+
+	.footer-services{
+		display: flex;
+		flex-flow: column nowrap;
+		
+		.services-payment,
+		.services-shipping,
+		.services-certificate{
+			display: inline-block;
+			display: inline-flex;
+			flex-flow: row wrap;
+			flex: 0 1 auto;
+		}
+
+		.services-certificate{
+			flex: 1 0 auto;
+		}
+
+		.services-title{
+			width: 100%;
+		}
+
+		a{
+			flex: 1 1 auto;
+			display: inline-block;
+			max-width: 5rem;
+    		margin-right: .5rem;
+		}
+
+		img{
+			max-height: 4rem;
+		}
+	}
+
+	.footer-column{
+
+		h5{
+			font-weight: 700;
+		}
+	}
+
+	.newsletter{
+		
+	}
+
+	.btn-mail {
+	    background-color: $gray;
+	    color: white;
+
+		i {
+	    	padding: 0 1rem;
+		}
+
+		&:hover {
+			background-color: $gray-light;
+		}
+	}
+
+	@include media-breakpoint-up(sm){
+		.footer-services{
+			flex-flow: row nowrap;
+		}
+	}
+
+	@include media-breakpoint-up(md){
+
+	}
+
+	@include media-breakpoint-up(lg){
+
+	}
+}
+
+.plenty-brand {
+	height: 30px;
+	margin: 2em 0 0.2em;
+}
+
+.static-link-list {
+	margin-bottom: -15px;
+}
+
+.static-link-list a {
+	color: black;
+	margin-right: 10px;
+}
